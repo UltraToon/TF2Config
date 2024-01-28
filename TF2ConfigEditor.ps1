@@ -13,12 +13,12 @@ do {
     ~                             |___/                                   ~
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Manage:
-    [1] Manage Presets [custom]
-    [2] Manage Bases [cfg] (NOT SETUP YET DO NOT CHOOSE)
+        [1] Manage Presets [custom]
+        [2] Manage Bases [cfg] (NOT SETUP YET DO NOT CHOOSE)
 
     Other:
-    [3] What is this?
-    [4] Reset TF2
+        [3] What is this?
+        [4] Reset TF2
     "
 } until ($mainOptions -in 1..4)
 Clear-Host
@@ -34,10 +34,10 @@ if ($mainOptions -eq 1) {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Manage:
-    [1] Upload a preset
+        [1] Upload a preset
 
     Select:
-    {0} 
+        {0} 
 
     "
     if (!(Test-Path ".\TF2CE_Presets.cfg")) {$null = New-Item ".\TF2CE_Presets.cfg" -Force}
@@ -84,8 +84,9 @@ if ($mainOptions -eq 1) {
     $null = Read-Host -prompt '
     !!! PLEASE BACKUP YOUR CFG AND CUSTOM FOLDER IF YOU WANT TO KEEP SETTINGS !!!
     > It will NOT reset account data (LVLS, ITEMS, ETC.,)
-    [ENTER] Continue
-    [CTRL+C] Cancel
+
+        [ENTER] Continue
+        [CTRL+C] Cancel
     '
     Clear-Host
     Remove-Item "$TF2\tf\custom\*", "$TF2\tf\cfgs" -Recurse -Force -ErrorAction SilentlyContinue
