@@ -12,11 +12,11 @@ do {
     ~      \____\___/|_| |_|_| |_|\__, | |_____\__,_|_|\__\___/|_|        ~
     ~                             |___/                                   ~
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Manage:
+    > Manage:
         [1] Manage Presets [custom]
         [2] Manage Bases [cfg] (NOT SETUP YET DO NOT CHOOSE)
 
-    Other:
+    > Other:
         [3] What is this?
         [4] Reset TF2
     "
@@ -33,10 +33,10 @@ if ($mainOptions -eq 1) {
     ~                                                              |___/                ~
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Manage:
+    > Manage:
         [1] Upload a preset
 
-    Select:
+    > Select:
         {0} 
 
     "
@@ -63,30 +63,31 @@ if ($mainOptions -eq 1) {
         }
 } elseif ($mainOptions -eq 3) {
     $null = Read-Host -prompt '
-    > [Presets]
-        1. They are basically duplicates of your [tf/custom] folder (huds, mods, cfg, sounds etc.,)
-        2. You can swap them out whenever you want, without having to reset everything or move files around.
-        3. They can be anywhere on your PC, just load them in. It does it for you after that.
-        4. Just open the Preset Manager, choose "[1] Upload a preset", then reload the script. It should be there now.
+    > Presets:
+        - They are basically duplicates of your [tf/custom] folder (huds, mods, cfg, sounds etc.,)
+        - You can swap them out whenever you want, without having to reset everything or move files around.
+        - They can be anywhere on your PC, just load them in. It does it for you after that.
+        - Just open the Preset Manager, choose "[1] Upload a preset", then reload the script. It should be there now.
     
-    > [Bases]
-        1. Just like presets, but with your CFG folders, I decided to do this seperately for modularity reasons.
-        2. Lets say you have a friend over, with different settings, all you have to do is "[1] Upload a base", reload, then choose it!
+    > :Bases:
+        - Just like presets, but with your CFG folders, I decided to do this seperately for modularity reasons.
+        - Lets say you have a friend over, with different settings, all you have to do is "[1] Upload a base", reload, then choose it!
     
-    > [Reset TF2]
-        1. Hence the name, it resets TF2 of its configuration and files. This does not modify account data since its saved in the cloud.
-        2. Its useful to fix your game if its broken in a way, or have a fresh new start to make a config.
-        3. If you have things you care about in the TF folder, then back them up to another location outside of the game folder.
+    > Reset TF2:
+        - Hence the name, it resets TF2 of its configuration and files. This does not modify account data since its saved in the cloud.
+        - Its useful to fix your game if its broken in a way, or have a fresh new start to make a config.
+        - If you have things you care about in the TF folder, then back them up to another location outside of the game folder.
     
-    [ENTER] Exit
+        Press [ENTER] to exit
         '
 } elseif ($mainOptions -eq 4) {
     $null = Read-Host -prompt '
     !!! PLEASE BACKUP YOUR CFG AND CUSTOM FOLDER IF YOU WANT TO KEEP SETTINGS !!!
     > It will NOT reset account data (LVLS, ITEMS, ETC.,)
-
-        [ENTER] Continue
-        [CTRL+C] Cancel
+       +==================+
+       | [ENTER] Continue |
+       | [CTRL+C] Cancel  |
+       +==================+
     '
     Clear-Host
     Remove-Item "$TF2\tf\custom\*", "$TF2\tf\cfgs" -Recurse -Force -ErrorAction SilentlyContinue
@@ -108,6 +109,6 @@ Clear-Host
 ~     |____/ \___/ \____\____|_____|____/____/      ~
 ~                                                   ~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-[ Press ENTER to exit ]                                       
+    Press [ENTER] to exit                                       
 "
 $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
