@@ -57,7 +57,7 @@ if ($mainOptions -eq 1) {
         } else {Write-Error "User chose Cancel"}
     } elseif ($selection -ge 2) {
         'Cleaning up...'
-        Remove-Item "$TF2\tf\custom" -Force -Recurse
+        Remove-Item "$TF2\tf\custom" -Force -Recurse -ErrorAction SilentlyContinue
         'Applying preset...'
         Copy-Item $map[$selection] "$TF2\tf\custom" -Recurse -Force
         }
@@ -88,7 +88,7 @@ if ($mainOptions -eq 1) {
     [CTRL+C] Cancel
     '
     Clear-Host
-    Remove-Item "$TF2\tf\custom\*", "$TF2\tf\cfgs" -recurse -force -erroraction silentlycontinue
+    Remove-Item "$TF2\tf\custom\*", "$TF2\tf\cfgs" -Recurse -Force -ErrorAction SilentlyContinue
     Get-ChildItem "C:\Program Files (x86)\Steam\userdata\*\440\remote\cfg\config.cfg" | Set-content -Value $null
     Start-Process steam://validate/440
     "Doing a file validation check! It should show the [PLAY] button once finished."
