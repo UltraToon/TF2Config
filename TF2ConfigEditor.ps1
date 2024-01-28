@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'stop'
 $TF2 = "C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2"
-if (!(Test-Path $TF2)) {"[ERROR] TF2 not found! Please install it!"}
+if (!(Test-Path $TF2)) {'[ERROR] Please install TF2! Press [ENTER] to exit.'; $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null; exit}
 Clear-Host
 do {
     $mainOptions = Read-Host -prompt "
@@ -13,8 +13,8 @@ do {
     ~                             |___/                                   ~
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     > Manage:
-        [1] Manage Presets [custom]
-        [2] Manage Bases [cfg] (NOT SETUP YET DO NOT CHOOSE)
+        [1] Manage Presets [tf/custom]
+        [2] Manage Bases [tf/cfg]
 
     > Other:
         [3] What is this?
@@ -23,6 +23,7 @@ do {
 } until ($mainOptions -in 1..4)
 Clear-Host
 if ($mainOptions -eq 1) {
+    $presetFile = 'TF2CE/Presets.cfg'
     $presetMenu = "
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ~      ____                     _     __  __                                        ~
@@ -40,9 +41,9 @@ if ($mainOptions -eq 1) {
         {0} 
 
     "
-    if (!(Test-Path ".\TF2CE_Presets.cfg")) {$null = New-Item ".\TF2CE_Presets.cfg" -Force}
+    if (!(Test-Path $presetFile)) {$null = New-Item $presetFile -Force}
     $map = @{}; $counter = 2
-    $addToMenu = Get-Content 'TF2CE_Presets.cfg' | ForEach-Object {
+    $addToMenu = Get-Content $presetFile | ForEach-Object {
         $leaf = Split-Path $_ -Leaf
         $map[$counter.ToString()] = "$_"
         '[{0}] {1}' -f $counter++, $leaf
@@ -53,15 +54,56 @@ if ($mainOptions -eq 1) {
         $folderDialog = [System.Windows.Forms.FolderBrowserDialog]::new()
         $dialogResult = $folderDialog.ShowDialog()
         if ($dialogResult -eq [System.Windows.Forms.DialogResult]::OK) {
-            Add-Content '.\TF2CE_Presets.cfg' -Value $folderDialog.SelectedPath
+            Add-Content $presetFile -Value $folderDialog.SelectedPath
         } else {Write-Error "User chose Cancel"}
     } elseif ($selection -ge 2) {
         'Cleaning up...'
         Remove-Item "$TF2\tf\custom" -Force -Recurse -ErrorAction SilentlyContinue
         'Applying preset...'
         Copy-Item $map[$selection] "$TF2\tf\custom" -Recurse -Force
-        }
-} elseif ($mainOptions -eq 3) {
+    }
+} elseif ($mainOptions -eq 2) {
+    $baseFile = 'TF2CE/Bases.cfg'
+    $baseMenu = "
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~      ____                   __  __                                        ~
+    ~     | __ )  __ _ ___  ___  |  \/  | __ _ _ __   __ _  __ _  ___ _ __      ~
+    ~     |  _ \ / _` / __|/ _ \ | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|     ~
+    ~     | |_) | (_| \__ \  __/ | |  | | (_| | | | | (_| | (_| |  __/ |        ~
+    ~     |____/ \__,_|___/\___| |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|        ~
+    ~                                                      |___/                ~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    > Manage:
+        [1] Upload a base
+
+    > Select:
+        {0} 
+
+    "
+    if (!(Test-Path $baseFile)) {$null = New-Item $baseFile -Force}
+    $map = @{}; $counter = 2
+    $addToMenu = Get-Content $baseFile | ForEach-Object {
+        $leaf = Split-Path $_ -Leaf
+        $map[$counter.ToString()] = "$_"
+        '[{0}] {1}' -f $counter++, $leaf
+    }
+    $selection = Read-Host ($baseMenu -f ($addToMenu -join [System.Environment]::NewLine))
+    if ($selection -eq 1) {
+        Add-Type -AssemblyName System.Windows.Forms
+        $folderDialog = [System.Windows.Forms.FolderBrowserDialog]::new()
+        $dialogResult = $folderDialog.ShowDialog()
+        if ($dialogResult -eq [System.Windows.Forms.DialogResult]::OK) {
+            Add-Content $baseFile -Value $folderDialog.SelectedPath
+        } else {Write-Error "User chose Cancel"}
+    } elseif ($selection -ge 2) {
+        'Cleaning up...'
+        Remove-Item "$TF2\tf\cfg\overrides" -Force -Recurse -ErrorAction SilentlyContinue
+        'Applying base...'
+        Copy-Item $map[$selection] "$TF2\tf\" -Recurse -Force
+    }
+}
+elseif ($mainOptions -eq 3) {
     $null = Read-Host -prompt '
     > Presets:
         - They are basically duplicates of your [tf/custom] folder (huds, mods, cfg, sounds etc.,)
@@ -69,9 +111,10 @@ if ($mainOptions -eq 1) {
         - They can be anywhere on your PC, just load them in. It does it for you after that.
         - Just open the Preset Manager, choose "[1] Upload a preset", then reload the script. It should be there now.
     
-    > :Bases:
+    > Bases:
         - Just like presets, but with your CFG folders, I decided to do this seperately for modularity reasons.
         - Lets say you have a friend over, with different settings, all you have to do is "[1] Upload a base", reload, then choose it!
+        - It is required to use mastercomfigs overrides method (tf/cfg/overrides/yourcfgfiles). If not already, install mastercomfig.
     
     > Reset TF2:
         - Hence the name, it resets TF2 of its configuration and files. This does not modify account data since its saved in the cloud.
@@ -99,8 +142,7 @@ if ($mainOptions -eq 1) {
 }
 
 Clear-Host
-"
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~                                                   ~
 ~      ____  _   _  ____ ____ _____ ____ ____       ~
 ~     / ___|| | | |/ ___/ ___| ____/ ___/ ___|      ~
@@ -110,5 +152,5 @@ Clear-Host
 ~                                                   ~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Press [ENTER] to exit                                       
-"
+'
 $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
